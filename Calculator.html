@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Hacker Calculator - By Sid</title>
+    <style>
+        body {
+            background: #000;
+            background-size: 400% 400%;
+            animation: gradientAnimation 1s infinite;
+            font-family: "Courier New", monospace;
+            color: #00FF00;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        @keyframes gradientAnimation {
+            0% {
+                background-position: 0% 50%;
+            }
+            100% {
+                background-position: 100% 50%;
+            }
+        }
+
+        marquee h1 {
+            text-shadow: 2px 2px 4px rgba(7, 250, 7, 0.8);
+        }
+
+        #calculator {
+        width: 350px;
+        background-color: #000;
+        border: 5px solid transparent;
+        border-image: linear-gradient(45deg, #d20a1e, aqua , blue, white) 1;
+        border-image-slice: 1;
+        border-radius: 20px;
+        padding: 20px;
+        box-shadow: 0 0 20px #00FF00 (255, 254, 255);
+        position: relative;
+        margin: 0 auto;
+        position: relative;
+        z-index: 2;
+    }
+
+    @keyframes rotateBorderColors {
+        0% {
+            border-image-source: linear-gradient(45deg, #d20a1e, aqua , , blue, white);
+        }
+        50% {
+            border-image-source: linear-gradient(45deg,aqua, blue, white, red );
+        }
+        100% {
+            border-image-source: linear-gradient(45deg, white, aqua (7, 161, 244), red, blue);
+        }
+    }
+
+    #calculator {
+        animation: rotateBorderColors 2s linear infinite;
+    }
+
+        #display {
+            height: 80px;
+            background-color: #000;
+            border: 5px solid #00FF00;
+            text-align: center;
+            padding: 15px;
+            font-size: 36px;
+            margin-bottom: 20px;
+            border-radius: 15px;
+            color: #00FF00;
+        }
+
+        #buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        .button {
+            background: none;
+            border: 2px solid #00FF00;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            border-radius: 15px;
+            transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+            font-size: 24px;
+            color: #00FF00;
+            box-shadow: 2px 2px 5px rgba(61, 3, 233, 0.964);
+        }
+
+        .button:hover {
+            background-color: #00FF00;
+            color: black;
+            transform: scale(1.05);
+            box-shadow: 4px 4px 8px rgb(254, 255, 254);
+            transition: background 0.2s, transform 0.1s, box-shadow 0.2s, color 0.2s;
+        }
+
+        .button:active {
+            background-color: #000;
+            transform: scale(0.95);
+        }
+
+        .button.operator {
+            background: none;
+            border: 2px solid #00FF00;
+        }
+
+        .fire-animation {
+            animation: fire 0.5s ease-in-out;
+        }
+
+        @keyframes fire {
+            0% {
+                background-color: #000;
+                transform: scale(1);
+            }
+            50% {
+                background-color: #00FF00;
+                transform: scale(1.05);
+            }
+            100% {
+                background-color: #000;
+                transform: scale(1);
+            }
+        }
+
+        .terminal-container {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 50%;
+            height: 100%;
+            background: #000;
+            overflow: hidden;
+        }
+
+        .terminal {
+            background: #000;
+            color: #00FF00;
+            font-family: "Courier New", monospace;
+            padding: 10px;
+            border: 2px solid #00FF00;
+            border-radius: 5px;
+            font-size: 16px;
+            margin-top: 10px;
+            white-space: pre-wrap;
+            height: 100%;
+            overflow-y: scroll;
+            scrollbar-width: thin;
+            scrollbar-color: #00FF00 transparent;
+            position: relative;
+        }
+
+        .terminal::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        .terminal::-webkit-scrollbar-thumb {
+            background: #00FF00;
+        }
+
+        .history {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+    <marquee><h1>Welcome to Sid's Calculator</h1></marquee>
+    <div id="calculator">
+        <div id="display">0</div>
+        <div id="buttons">
+            <div class="button" onclick="clearDisplay()">C</div>
+            <div class="button" onclick="addToDisplay('7')">7</div>
+            <div class="button" onclick="addToDisplay('8')">8</div>
+            <div class="button" onclick="addToDisplay('9')">9</div>
+            <div class="button" onclick="addToDisplay('4')">4</div>
+            <div class="button" onclick="addToDisplay('5')">5</div>
+            <div class="button" onclick="addToDisplay('6')">6</div>
+            <div class="button" onclick="addToDisplay('1')">1</div>
+            <div class="button" onclick="addToDisplay('2')">2</div>
+            <div class="button" onclick="addToDisplay('3')">3</div>
+            <div class="button" onclick="addToDisplay('0')">0</div>
+            <div class="button" onclick="addToDisplay('.')">.</div>
+            <div class="button operator" onclick="calculateResult()">=</div>
+            <div class="button operator" onclick="addToDisplay('+')">+</div>
+            <div class="button operator" onclick="addToDisplay('-')">-</div>
+            <div class="button operator" onclick="addToDisplay('*')">*</div>
+            <div class= "button operator" onclick="addToDisplay('/')">/</div>
+        </div>
+    </div>
+    <div class="terminal-container">
+        <div class="terminal" id="terminal">
+            <div class="history"></div>
+        </div>
+    </div>
+    <script>
+        let displayValue = "0";
+        let terminalText = "Welcome to Sid's Calculator\n";
+
+        function updateDisplay() {
+            document.getElementById("display").innerText = displayValue;
+        }
+
+        function addToDisplay(value) {
+            if (displayValue === "0") {
+                displayValue = value;
+            } else {
+                displayValue += value;
+            }
+            updateDisplay();
+            terminalText += value;
+            updateTerminal();
+        }
+
+        function clearDisplay() {
+            displayValue = "0";
+            updateDisplay();
+        }
+
+        function calculateResult() {
+            try {
+                displayValue = eval(displayValue).toString();
+            } catch (error) {
+                displayValue = "Error";
+            }
+            updateDisplay();
+            terminalText += " = " + displayValue + "\n";
+            updateTerminal();
+            
+            document.getElementById("display").classList.add('fire-animation');
+            setTimeout(() => {
+                document.getElementById("display").classList.remove('fire-animation');
+            }, 500);
+        }
+
+        function updateTerminal() {
+            const terminal = document.getElementById("terminal");
+            const history = document.querySelector(".history");
+            
+            history.innerHTML = terminalText;
+            terminal.scrollTop = terminal.scrollHeight;
+        }
+    </script>
+</body>
+</html>
+
+
+
+
+
+
